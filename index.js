@@ -5,7 +5,7 @@ import {
   loginValidation,
   registerValidation,
 } from './validations/auth-validation.js';
-import checkAuth from './helpers/checkAuth.js';
+import checkAuth from './middlewares/checkAuth.js';
 import { getProfile, register, login } from './services/UserService.js';
 import {
   createTodo,
@@ -16,6 +16,7 @@ import {
 } from './services/TodoListService.js';
 import { todoItemValidation } from './validations/todo-validation.js';
 import { config } from './utils/config.js';
+import checkAccessTodo from './middlewares/checkAccessTodo.js';
 mongoose
   .connect(
     `mongodb+srv://${config.mongoUrl}@cluster0.5z0vtiz.mongodb.net/todo?retryWrites=true&w=majority`,
@@ -45,8 +46,14 @@ app.get('/auth/profile', checkAuth, getProfile);
 app.post('/todo', checkAuth, todoItemValidation, createTodo);
 app.get('/todo', checkAuth, getAllTodo);
 app.get('/todo/:id', checkAuth, getTodoById);
-app.delete('/todo/:id', checkAuth, removeTodoById);
-app.patch('/todo/:id', checkAuth, todoItemValidation, updateTodoById);
+app.delete('/todo/:id', checkAuth, checkAccessTodo, removeTodoById);
+app.patch(
+  '/todo/:id',
+  checkAuth,
+  todoItemValidation,
+  checkAccessTodo,
+  updateTodoById,
+);
 
 app.listen(4444, (err) => {
   if (err) {
