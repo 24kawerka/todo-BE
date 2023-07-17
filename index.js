@@ -4,19 +4,19 @@ import mongoose from 'mongoose';
 import {
   loginValidation,
   registerValidation,
-} from './validations/auth-validation.js';
-import checkAuth from './middlewares/checkAuth.js';
-import { getProfile, register, login } from './services/UserService.js';
+} from './src/validations/auth-validation.js';
+import checkAuth from './src/middlewares/checkAuth.js';
+import { getProfile, register, login } from './src/services/UserService.js';
 import {
   createTodo,
   getAllTodo,
   getTodoById,
   removeTodoById,
   updateTodoById,
-} from './services/TodoListService.js';
-import { todoItemValidation } from './validations/todo-validation.js';
-import { config } from './utils/config.js';
-import checkAccessTodo from './middlewares/checkAccessTodo.js';
+} from './src/services/TodoListService.js';
+import { todoItemValidation } from './src/validations/todo-validation.js';
+import { config } from './src/utils/config.js';
+import checkAccessTodo from './src/middlewares/checkAccessTodo.js';
 mongoose
   .connect(
     `mongodb+srv://${config.mongoUrl}@cluster0.5z0vtiz.mongodb.net/todo?retryWrites=true&w=majority`,
