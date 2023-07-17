@@ -26,8 +26,23 @@ export const createTodo = async (req, res) => {
 
 export const getAllTodo = async (req, res) => {
   try {
-    const posts = await TodoModel.find().populate('user').exec();
-    res.json(posts);
+    const { page = 1, limit = 10 } = req.query;
+    const posts = await TodoModel.find({ isPublic: true })
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
+      .sort({ createdAt: -1 })
+      .populate('user')
+      .exec();
+    const postDTO =
+      posts.length > 0
+        ? posts.map((post) => {
+            const { _doc } = post;
+            const { user, __v, ...restData } = _doc;
+            return { ...restData, user: { _id: user._id } };
+          })
+        : [];
+
+    res.json(postDTO);
   } catch (e) {
     console.log(e);
     res.status(500).json({
@@ -86,18 +101,15 @@ export const updateTodoById = async (req, res) => {
       return res.status(400).json(errors);
     }
     const postId = req.params.id;
-    await TodoModel.findByIdAndUpdate(
-      postId,
-      {
-        $set: {
-          title: req.body.title,
-          description: req.body.description,
-          isPublic: req.body.isPublic,
-          isDone: req.body.isDone,
-          user: req.userId,
-        },
+    await TodoModel.findByIdAndUpdate(postId, {
+      $set: {
+        title: req.body.title,
+        description: req.body.description,
+        isPublic: req.body.isPublic,
+        isDone: req.body.isDone,
+        user: req.userId,
       },
-    );
+    });
     res.json({
       success: true,
       message: 'Todo was updated',
