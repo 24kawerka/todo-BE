@@ -18,6 +18,7 @@ import { todoItemValidation } from './src/validations/todo-validation.js';
 import { config } from './src/utils/config.js';
 import checkAccessTodo from './src/middlewares/checkAccessTodo.js';
 import { createComment, getAllTodoComments } from './src/services/CommentService.js';
+import { commentValidation } from './src/validations/comment-validation.js';
 mongoose
   .connect(
     `mongodb+srv://${config.mongoUrl}@cluster0.5z0vtiz.mongodb.net/todo?retryWrites=true&w=majority`,
